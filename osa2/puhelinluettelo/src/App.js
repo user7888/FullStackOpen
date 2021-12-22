@@ -63,7 +63,7 @@ const App = () => {
       <h2>Phonebook</h2>
         <Filter newSearch={newSearch} handleChange={handleSearchChange}/>
       <h2>add a new</h2>
-        <AddToPhonebook addNumber={addNumber}
+        <AddNewNumber addNumber={addNumber}
                         newName={newName}
                         handleNameChange={handleNameChange}
                         handleNumberChange={handleNumberChange}
@@ -90,7 +90,7 @@ const Filter = (props) => {
   )
 }
 
-const AddToPhonebook = (props) => {
+const AddNewNumber = (props) => {
   return (
     <form onSubmit={props.addNumber}>
         <div> name: <input 
