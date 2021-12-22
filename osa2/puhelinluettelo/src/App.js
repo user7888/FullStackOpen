@@ -2,10 +2,14 @@ import React, { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [newSearch, setSearch] = useState('')
 
   const addNumber = (event) => {
     event.preventDefault()
@@ -31,6 +35,10 @@ const App = () => {
     console.log(event.target.value)
     setNewNumber(event.target.value)
   }
+  const handleSearchChange = (event) => {
+    console.log(event.target.value)
+    setSearch(event.target.value)
+  }
   // haun listalta tietyllä attribuutilla voi tehdä
   // myös .some metodilla. (ilman boolean-muunnosta?)
   const isInArray = (element) => {
@@ -42,30 +50,27 @@ const App = () => {
     }
     return false
   }
+  const numbersToShow = (newSearch) => {
+    console.log('Hakusana: ', newSearch)
+    if (newSearch.length === 0) {
+      return persons
+    }
+    return persons.filter(person => person.name.toLowerCase().includes(newSearch.toLowerCase()))
+  }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addNumber}>
-        <div> name: <input 
-            value={newName}
-            onChange={handleNameChange}/>
-        </div>
-        <div>
-           number: <input
-            value={newNumber}
-            onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+        <Filter newSearch={newSearch} handleChange={handleSearchChange}/>
+      <h2>add a new</h2>
+        <AddToPhonebook addNumber={addNumber}
+                        newName={newName}
+                        handleNameChange={handleNameChange}
+                        handleNumberChange={handleNumberChange}
+                        newNumber={newNumber}/>
       <h2>Numbers</h2>
-        {persons.map(person =>
-        <div key={person.name}>
-          <Numbers name={person.name} number={person.number}/>
-        </div>)
-        }
+        <DisplayPhonebook numbersToShow={numbersToShow}
+                          newSearch={newSearch}/>
     </div>
   )
 }
@@ -73,6 +78,46 @@ const App = () => {
 const Numbers = (props) => {
   return (
     <p>{props.name} {props.number}</p>
+  )
+}
+
+const Filter = (props) => {
+  return (
+    <div> filter numbers: <input
+            value={props.newSearch}
+            onChange={props.handleChange}/>
+    </div>
+  )
+}
+
+const AddToPhonebook = (props) => {
+  return (
+    <form onSubmit={props.addNumber}>
+        <div> name: <input 
+            value={props.newName}
+            onChange={props.handleNameChange}/>
+        </div>
+        <div>
+           number: <input
+            value={props.newNumber}
+            onChange={props.handleNumberChange}/>
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+  )
+}
+
+const DisplayPhonebook = (props) => {
+  return (
+    <div>
+    {props.numbersToShow(props.newSearch).map(person =>
+      <div key={person.name}>
+        <Numbers name={person.name} number={person.number}/>
+      </div>)
+    }
+    </div>
   )
 }
 
