@@ -1,15 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setSearch] = useState('')
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/persons')
+      .then(response => {
+        console.log('promise fulfilled')
+        setPersons(response.data)
+      })
+  }, [])
+  console.log('render', persons.length, 'persons')
 
   const addNumber = (event) => {
     event.preventDefault()
@@ -50,7 +57,7 @@ const App = () => {
     }
     return false
   }
-  const numbersToShow = (newSearch) => {
+  const displayNumbers = (newSearch) => {
     console.log('Hakusana: ', newSearch)
     if (newSearch.length === 0) {
       return persons
@@ -69,7 +76,7 @@ const App = () => {
                         handleNumberChange={handleNumberChange}
                         newNumber={newNumber}/>
       <h2>Numbers</h2>
-        <DisplayPhonebook numbersToShow={numbersToShow}
+        <DisplayPhonebook displayNumbers={displayNumbers}
                           newSearch={newSearch}/>
     </div>
   )
@@ -112,7 +119,7 @@ const AddNewNumber = (props) => {
 const DisplayPhonebook = (props) => {
   return (
     <div>
-    {props.numbersToShow(props.newSearch).map(person =>
+    {props.displayNumbers(props.newSearch).map(person =>
       <div key={person.name}>
         <Numbers name={person.name} number={person.number}/>
       </div>)
