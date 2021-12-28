@@ -20,7 +20,7 @@ const App = () => {
     console.log(event.target.value)
     setSearch(event.target.value)
   }
-
+/*
   // haku tietokannasta:
   const filterCountries = (newSearch) => {
     console.log('Hakusana: ', newSearch)
@@ -29,10 +29,9 @@ const App = () => {
     // }
     let countries = countryData.filter(country => 
       country.name['common'].toLowerCase().includes(newSearch.toLowerCase()))
-    if (countries.length <= 10)
-      return countries
     return []
   }
+*/
 
   return (
     <div>
@@ -40,7 +39,7 @@ const App = () => {
         <Filter newSearch={newSearch}
                 handleChange={handleSearchChange}/>
       <div>
-        <DisplayCountries filterCountries={filterCountries}
+        <DisplayCountries 
                           newSearch={newSearch}
                           countryData={countryData}/>
       </div>
@@ -64,12 +63,48 @@ const Filter = (props) => {
   )
 }
 
+const Languages = (props) => {
+  return (
+    <li> {props.language} </li>
+  )
+}
+
+// lenght typo. Automaattinen ehdotus väärä?
+// kuva: coatOfArms. png-file
 const DisplayCountries = (props) => {
   let countries = props.countryData.filter(country => 
     country.name['common'].toLowerCase().includes(props.newSearch.toLowerCase()))
   console.log(countries.lenght)
+  console.log('New search=', props.newSearch)
+  console.log('New Search lenght=', props.newSearch.length)
+// newest
+// Kuinka iteroida lista ja palauttaa HTML li-elementtejä?
+  if (countries.length === 1) {
+    return (
+      <div>
+        <h1>{countries[0].name['common']}</h1>
+          <p> capital {countries[0].capital} </p>
+          <p> population {countries[0].population}</p>
+        <h3> Languages </h3>
+        <ul>
+          {Object.entries(countries[0].languages).map( ([key, value]) =>
+            <div key={value}>
+            <Languages language={value}/>
+            </div>)}
+        </ul>
+        <img src={countries[0].flags['png']}/>
+      </div>
+    )
+  }
+  if (props.newSearch.length === 0) {
+    return (
+      <div>
+        Too many matches, specify an other filter
+      </div>
+    )
+  }
 
-  if (countries.lenght < 10) {
+  if (countries.length > 10) {
     return (
       <div>
         Too many matches, specify an other filter
@@ -78,7 +113,7 @@ const DisplayCountries = (props) => {
   }
   return (
     <div>
-      {props.filterCountries(props.newSearch).map(country =>
+      {countries.map(country =>
       <div key={country.name['common']}>
         <Country name={country.name['common']}/>
       </div>)
