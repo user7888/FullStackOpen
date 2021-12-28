@@ -8,11 +8,7 @@ const App = () => {
   const [wind, setWind] = useState(0)
   const [windDirection, setWindDirection] = useState('')
   const [img, setImg] = useState('')
-  const key = '751cbca9a10d1d0c6c558bfc10da7034'
-  //let temperature = 0
-  //let wind = 0
-  //let windDirection = ''
-  //let img = ''
+  const api_key = process.env.REACT_APP_API_KEY
 
   useEffect(() => {
     console.log('effect')
@@ -25,12 +21,11 @@ const App = () => {
   }, [])
   console.log('render', countryData.length, 'countries')
 
-
   const getWeatherData = (city) => {
     console.log('capital is...', city)
     console.log('weather effect')
     axios
-      .get(`http://api.weatherstack.com/current?access_key=${key}&query=${city}`)
+      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${city}`)
       .then(response => {
         console.log('promise fulfilled, weather')
         console.log('response is.. ', response)
