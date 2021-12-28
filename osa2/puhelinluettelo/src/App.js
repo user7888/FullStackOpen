@@ -26,7 +26,6 @@ const App = () => {
       name: newName,
       number : newNumber
     }
-    // else-rakenne / totuusarvot?
     if (isInArray(numberObject)) {
       console.log('Nimi löytyi listasta..')
       return
