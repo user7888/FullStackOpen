@@ -7,6 +7,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setSearch] = useState('')
 
+// hakee datan palvelimelta.
   useEffect(() => {
     console.log('effect')
     axios

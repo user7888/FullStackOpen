@@ -4,6 +4,15 @@ import axios from 'axios'
 const App = () => {
   const [countryData, setCountryData] = useState([])
   const [newSearch, setSearch] = useState('')
+  const [temperature, setTemperature] = useState(0)
+  const [wind, setWind] = useState(0)
+  const [windDirection, setWindDirection] = useState('')
+  const [img, setImg] = useState('')
+  const key = '751cbca9a10d1d0c6c558bfc10da7034'
+  //let temperature = 0
+  //let wind = 0
+  //let windDirection = ''
+  //let img = ''
 
   useEffect(() => {
     console.log('effect')
@@ -16,22 +25,31 @@ const App = () => {
   }, [])
   console.log('render', countryData.length, 'countries')
 
+
+  const getWeatherData = (city) => {
+    console.log('capital is...', city)
+    console.log('weather effect')
+    axios
+      .get(`http://api.weatherstack.com/current?access_key=${key}&query=${city}`)
+      .then(response => {
+        console.log('promise fulfilled, weather')
+        console.log('response is.. ', response)
+        setWind(response['data']['current']['wind_speed'])
+        setWindDirection(response['data']['current']['wind_dir'])
+        setImg(response['data']['current']['weather_icons'][0])
+        setTemperature(response['data']['current']['temperature'])
+      })
+  }
+
   const handleSearchChange = (event) => {
     console.log(event.target.value)
     setSearch(event.target.value)
   }
-/*
-  // haku tietokannasta:
-  const filterCountries = (newSearch) => {
-    console.log('Hakusana: ', newSearch)
-    // if (newSearch.length === 0) {
-    //  return countryData
-    // }
-    let countries = countryData.filter(country => 
-      country.name['common'].toLowerCase().includes(newSearch.toLowerCase()))
-    return []
+
+  const button = (event, name) => {
+    event.preventDefault()
+    setSearch(name)
   }
-*/
 
   return (
     <div>
@@ -41,16 +59,31 @@ const App = () => {
       <div>
         <DisplayCountries 
                           newSearch={newSearch}
-                          countryData={countryData}/>
+                          countryData={countryData}
+                          button={button}
+                          getWeatherData={getWeatherData}
+                          temperature={temperature}
+                          wind={wind}
+                          windDirection={windDirection}
+                          img={img}/>
       </div>
-        
     </div>
+  )
+}
+
+const Button = (props) => {
+  return (
+      <button type="submit">show</button>
   )
 }
 
 const Country = (props) => {
   return (
-    <p>{props.name}</p>
+    <div>
+      <form onSubmit={event => props.button(event, props.name)}>
+        {props.name} <Button/>
+      </form>
+    </div>
   )
 }
 
@@ -69,16 +102,13 @@ const Languages = (props) => {
   )
 }
 
-// lenght typo. Automaattinen ehdotus väärä?
-// kuva: coatOfArms. png-file
 const DisplayCountries = (props) => {
   let countries = props.countryData.filter(country => 
     country.name['common'].toLowerCase().includes(props.newSearch.toLowerCase()))
   console.log(countries.lenght)
   console.log('New search=', props.newSearch)
   console.log('New Search lenght=', props.newSearch.length)
-// newest
-// Kuinka iteroida lista ja palauttaa HTML li-elementtejä?
+
   if (countries.length === 1) {
     return (
       <div>
@@ -93,6 +123,13 @@ const DisplayCountries = (props) => {
             </div>)}
         </ul>
         <img src={countries[0].flags['png']}/>
+        <h3>Weather in {countries[0].capital}</h3>
+        {props.getWeatherData(countries[0].capital)}
+         <div>
+           <strong>temperature:</strong> {props.temperature} Celsius <br></br>
+           <img src={props.img}/> <br></br>
+           <strong>wind:</strong> {props.wind} mph direction {props.windDirection}
+         </div>
       </div>
     )
   }
@@ -103,7 +140,6 @@ const DisplayCountries = (props) => {
       </div>
     )
   }
-
   if (countries.length > 10) {
     return (
       <div>
@@ -115,7 +151,8 @@ const DisplayCountries = (props) => {
     <div>
       {countries.map(country =>
       <div key={country.name['common']}>
-        <Country name={country.name['common']}/>
+        <Country name={country.name['common']}
+                button={props.button}/>
       </div>)
     }
     </div>
