@@ -8,7 +8,7 @@ const App = () => {
   const [wind, setWind] = useState(0)
   const [windDirection, setWindDirection] = useState('')
   const [img, setImg] = useState('')
-  const api_key = process.env.REACT_APP_API_KEY
+  const apiKey = process.env.REACT_APP_API_KEY
 
   useEffect(() => {
     console.log('effect')
@@ -25,7 +25,7 @@ const App = () => {
     console.log('capital is...', city)
     console.log('weather effect')
     axios
-      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${city}`)
+      .get(`http://api.weatherstack.com/current?access_key=${apiKey}&query=${city}`)
       .then(response => {
         console.log('promise fulfilled, weather')
         console.log('response is.. ', response)
