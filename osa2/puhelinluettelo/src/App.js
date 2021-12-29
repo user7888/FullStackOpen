@@ -30,8 +30,20 @@ const App = () => {
       console.log('Nimi löytyi listasta..')
       return
     }
-    setPersons(persons.concat(numberObject))
-    setNewName('')
+// paikallinen päivitys.
+//    setPersons(persons.concat(numberObject))
+//    setNewName('')
+// päivitys palvelimelle.
+    axios
+    .post('http://localhost:3001/persons', numberObject)
+    .then(response => {
+      console.log('vastaus palvelimelta..', response)
+  // paikallinen päivitys palvelimen lähettämän vastauksen
+  // perusteella.
+      setPersons(persons.concat(response.data))
+      setNewName('')
+      setNewNumber('')
+    })
   }
   const handleNameChange = (event) => {
     console.log('Event-olion kenttä', event.target.value)
