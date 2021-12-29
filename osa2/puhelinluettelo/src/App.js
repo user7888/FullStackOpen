@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import phonebookService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -8,8 +9,15 @@ const App = () => {
   const [newSearch, setSearch] = useState('')
 
 // hakee datan palvelimelta.
+// Axios vaihdetaan phonebookServiceen..
   useEffect(() => {
-    console.log('effect')
+    phonebookService
+      .getAll()
+        .then(initialNotes => {
+        setPersons(initialNotes)
+      })
+  }, [])
+/*    console.log('effect')
     axios
       .get('http://localhost:3001/persons')
       .then(response => {
@@ -18,7 +26,7 @@ const App = () => {
       })
   }, [])
   console.log('render', persons.length, 'persons')
-
+*/
   const addNumber = (event) => {
     event.preventDefault()
     console.log('button clicked', event.target)
@@ -33,7 +41,18 @@ const App = () => {
 // paikallinen päivitys.
 //    setPersons(persons.concat(numberObject))
 //    setNewName('')
+//
 // päivitys palvelimelle.
+// "promise-chains"
+    phonebookService
+      .create(numberObject)
+        .then(returnedNote => {
+        setPersons(persons.concat(returnedNote))
+        setNewName('')
+        setNewNumber('')
+      })
+  }
+  /*
     axios
     .post('http://localhost:3001/persons', numberObject)
     .then(response => {
@@ -45,6 +64,7 @@ const App = () => {
       setNewNumber('')
     })
   }
+  */
   const handleNameChange = (event) => {
     console.log('Event-olion kenttä', event.target.value)
     setNewName(event.target.value)
