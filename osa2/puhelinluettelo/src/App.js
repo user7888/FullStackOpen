@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import phonebookService from './services/persons'
 
+// osa2 muistiinpanon tärkeyden muutos: Button tekstin yhteyteen esimerkki.
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
@@ -27,15 +28,16 @@ const App = () => {
   }, [])
   console.log('render', persons.length, 'persons')
 */
-  const addNumber = (event) => {
+  const addNumber = (event, id) => {
     event.preventDefault()
     console.log('button clicked', event.target)
     const numberObject = {
       name: newName,
       number : newNumber
     }
-    if (isInArray(numberObject)) {
+    if (isInArray(numberObject, id)) {
       console.log('Nimi löytyi listasta..')
+      // !!!!!!!!!! mahd. ongelma .put:in kanssa
       return
     }
 // paikallinen päivitys.
@@ -65,6 +67,18 @@ const App = () => {
     })
   }
   */
+  
+  const buttonFunctionality = (event, id) => {
+    console.log('a button was pressed..')
+    event.preventDefault()
+    let foundPerson = persons.find(person => person.id === id)
+    let result = window.confirm(`Delete ${foundPerson.name} ?`);
+    if (result) {
+      setPersons(persons.filter(person => person.id !== id))
+      axios
+        .delete(`http://localhost:3001/persons/${id}`)
+    }
+  }
   const handleNameChange = (event) => {
     console.log('Event-olion kenttä', event.target.value)
     setNewName(event.target.value)
@@ -78,13 +92,28 @@ const App = () => {
     console.log(event.target.value)
     setSearch(event.target.value)
   }
+  const updateNumber = (id, element) => {
+    let url = `http://localhost:3001/persons/${id}`
+    axios.put(url, element).then(response => {
+      setPersons(persons.map(person => person.id !== id ? person : response.data))
+    })
+
+  }
   // haun listalta tietyllä attribuutilla voi tehdä
   // myös .some metodilla. (ilman boolean-muunnosta?)
-  const isInArray = (element) => {
+
+  const isInArray = (element, id) => {
     console.log(element.name)
     const nameFound = Boolean(persons.find(person => person.name === element.name))
+  // link name of an element to an id of an element...
+    const foundObject = persons.find(person => person.name === element.name)
+    console.log('löytyi...', foundObject)
     if (nameFound) {
-      window.alert(`${element.name} is already added to phone book`)
+      let result = window.confirm(`${element.name} is already added to phone book, replace the old number with a new one?`)
+      if (result) {
+        updateNumber(foundObject.id, element)
+        return true
+      }
       return true
     }
     return false
@@ -109,14 +138,24 @@ const App = () => {
                         newNumber={newNumber}/>
       <h2>Numbers</h2>
         <DisplayPhonebook displayNumbers={displayNumbers}
-                          newSearch={newSearch}/>
+                          newSearch={newSearch}
+                          buttonFunctionality={buttonFunctionality}/>
     </div>
   )
 }
 
+const Button = (props) => {
+  return (
+      <button type="submit">delete</button>
+  )
+}
+
+// button merkkijonon yhteyteen.
 const Numbers = (props) => {
   return (
-    <p>{props.name} {props.number}</p>
+    <form onSubmit={event => props.buttonFunctionality(event, props.id)}>
+        {props.name} {props.number} <Button/>
+    </form>
   )
 }
 
@@ -148,12 +187,13 @@ const AddNewNumber = (props) => {
   )
 }
 
+// id used as key
 const DisplayPhonebook = (props) => {
   return (
     <div>
     {props.displayNumbers(props.newSearch).map(person =>
-      <div key={person.name}>
-        <Numbers name={person.name} number={person.number}/>
+      <div key={person.id}>
+        <Numbers name={person.name} number={person.number} id={person.id} buttonFunctionality={props.buttonFunctionality}/>
       </div>)
     }
     </div>

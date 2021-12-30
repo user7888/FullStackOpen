@@ -1,13 +1,8 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "040-123456",
-      "id": 1
-    },
-    {
       "name": "Ada Lovelace",
-      "number": "39-44-5323523",
+      "number": "12345-12345",
       "id": 2
     },
     {
@@ -16,24 +11,9 @@
       "id": 3
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": 4
-    },
-    {
-      "name": "Pinja",
-      "number": "12345",
+      "name": "K. Kalevor",
+      "number": "11234-6654",
       "id": 5
-    },
-    {
-      "name": "Olli",
-      "number": "4321",
-      "id": 6
-    },
-    {
-      "name": "Olli Ollikainen",
-      "number": "1234 4321",
-      "id": 7
     }
   ]
 }
