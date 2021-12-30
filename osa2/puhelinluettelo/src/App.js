@@ -8,6 +8,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearch, setSearch] = useState('')
+  const [errorMessage, setErrorMessage] = useState('some error happened...')
 
 // hakee datan palvelimelta.
 // Axios vaihdetaan phonebookServiceen..
@@ -52,7 +53,12 @@ const App = () => {
         setPersons(persons.concat(returnedNote))
         setNewName('')
         setNewNumber('')
-      })
+        })
+        setErrorMessage(`${numberObject.name} was added to phonebook`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 4000)
+
   }
   /*
     axios
@@ -77,6 +83,11 @@ const App = () => {
       setPersons(persons.filter(person => person.id !== id))
       axios
         .delete(`http://localhost:3001/persons/${id}`)
+        //tähän
+        setErrorMessage(`${foundPerson.name} was deleted from phonebook`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 4000)
     }
   }
   const handleNameChange = (event) => {
@@ -96,6 +107,11 @@ const App = () => {
     let url = `http://localhost:3001/persons/${id}`
     axios.put(url, element).then(response => {
       setPersons(persons.map(person => person.id !== id ? person : response.data))
+      setErrorMessage(`${element.name}'s phone number was updated`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 4000)
+
     })
 
   }
@@ -129,6 +145,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+        <Notification message={errorMessage} />
         <Filter newSearch={newSearch} handleChange={handleSearchChange}/>
       <h2>add a new</h2>
         <AddNewNumber addNumber={addNumber}
@@ -196,6 +213,18 @@ const DisplayPhonebook = (props) => {
         <Numbers name={person.name} number={person.number} id={person.id} buttonFunctionality={props.buttonFunctionality}/>
       </div>)
     }
+    </div>
+  )
+}
+
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className="error">
+      {message}
     </div>
   )
 }
