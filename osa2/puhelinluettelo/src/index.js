@@ -6,7 +6,7 @@ import './index.css'
 
 // mitähän täälä tapahtuu? setPersons..
 axios
-  .get('http://localhost:3001/persons')
+  .get('http://localhost:3001/api/persons')
   .then(response => {
       const notes = response.data
       console.log('Promise fulfilled', notes)

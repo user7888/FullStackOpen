@@ -83,7 +83,7 @@ const App = () => {
     if (result) {
       setPersons(persons.filter(person => person.id !== id))
       axios
-        .delete(`http://localhost:3001/persons/${id}`)
+        .delete(`http://localhost:3001/api/persons/${id}`)
         //tähän
         setSuccessMessage(`${foundPerson.name} was deleted from phonebook`)
         setTimeout(() => {
@@ -113,7 +113,7 @@ const App = () => {
     setSearch(event.target.value)
   }
   const updateNumber = (id, element) => {
-    let url = `http://localhost:3001/persons/${id}`
+    let url = `http://localhost:3001/api/persons/${id}`
     axios
       .put(url, element)
       .then(response => {
