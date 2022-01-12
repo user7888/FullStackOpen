@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import phonebookService from './services/persons'
+// name ja number -kenttien nollaus tilanteessa
+// jossa jo olemassa olevan henkilön numero päivitetään.
+
+// Delete-napin painamiseen liittyvät errorit?
+
 
 // osa2 muistiinpanon tärkeyden muutos: Button tekstin yhteyteen esimerkki.
 const App = () => {
@@ -83,12 +88,13 @@ const App = () => {
     if (result) {
       setPersons(persons.filter(person => person.id !== id))
       axios
-        .delete(`http://localhost:3001/api/persons/${id}`)
-        //tähän
-        setSuccessMessage(`${foundPerson.name} was deleted from phonebook`)
-        setTimeout(() => {
+        .delete(`/api/persons/${id}`)
+        .then(response => {
+          setSuccessMessage(`${foundPerson.name} was deleted from phonebook`)
+          setTimeout(() => {
           setSuccessMessage(null)
         }, 4000)
+        })
         .catch(error => {
           console.log('fail')
           setErrorMessage(`information of ${foundPerson.name} has already been removed
@@ -113,7 +119,8 @@ const App = () => {
     setSearch(event.target.value)
   }
   const updateNumber = (id, element) => {
-    let url = `http://localhost:3001/api/persons/${id}`
+    let url = `/api/persons/${id}`
+    // laita tähän id tulostus
     axios
       .put(url, element)
       .then(response => {
