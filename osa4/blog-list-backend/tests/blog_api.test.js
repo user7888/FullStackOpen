@@ -34,20 +34,23 @@ beforeEach(async () => {
 
 test('blogs are returned as json', async () => {
   const response = await api.get('/api/blogs')
-
   expect(response.type).toBe('application/json')
 })
 
 test('there are two blogs', async () => {
   const response = await api.get('/api/blogs')
-
   expect(response.body).toHaveLength(2)
 })
 
 test('the author of first blog is Michael Chan', async () => {
   const response = await api.get('/api/blogs')
-  
   expect(response.body[0].author).toBe('Michael Chan')
+})
+
+test('id field is named correctly', async () => {
+  const response = await api.get('/api/blogs')
+  console.log(response.body[0])
+  expect(response.body[0].id).toBeDefined()
 })
 
 afterAll(() => {
