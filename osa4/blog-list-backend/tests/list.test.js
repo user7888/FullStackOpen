@@ -1,4 +1,5 @@
 const listHelper = require('../utils/list_helper')
+const mongoose = require('mongoose')
 
 const testList = [
   {
@@ -131,4 +132,8 @@ describe('Author with most likes', () => {
     }
     expect(listHelper.mostLikes(testList)).toEqual(testBlog)
   })
+})
+
+afterAll(() => {
+  mongoose.connection.close()
 })
