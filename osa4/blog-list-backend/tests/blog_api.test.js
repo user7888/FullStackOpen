@@ -53,7 +53,24 @@ test('adding a new blog to database works correctly', async () => {
   const blogsAtEnd = await helper.blogsInDb()
   console.log(blogsAtEnd)
   console.log(helper.initialBlogs.length)
+  console.log(blogsAtEnd[2])
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+})
+
+test('ensure that value of likes is 0 even if no value was given', async () => {
+ const testBlog = {
+  title: "Type warsz",
+  author: "Robert C. Martin",
+  url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html"
+  }
+
+  await api.post('/api/blogs')
+    .send(testBlog)
+    .expect(200)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd[2].likes).toBe(0)
+
 })
 
 
