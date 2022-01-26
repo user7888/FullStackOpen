@@ -4,6 +4,7 @@ const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blogs')
+const { config } = require('dotenv')
 // npm test -- tests/blog_api.test.js
 
 beforeEach(async () => {
@@ -70,9 +71,17 @@ test('ensure that value of likes is 0 even if no value was given', async () => {
 
   const blogsAtEnd = await helper.blogsInDb()
   expect(blogsAtEnd[2].likes).toBe(0)
-
 })
 
+test('if title and url properties are missing server responds with status code 400', async () => {
+  const testBlog = {
+    author: "Robert C. Martin",
+    likes: 2
+  }
+  await api.post('/api/blogs')
+    .send(testBlog)
+    .expect(400)
+})
 
 afterAll(() => {
   mongoose.connection.close()

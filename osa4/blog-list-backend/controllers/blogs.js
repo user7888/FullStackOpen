@@ -20,6 +20,10 @@ blogsRouter.post('/', async (request, response, next) => {
     blog.likes = 0
   }
   
+  if (body.ttle === undefined && body.url === undefined) {
+    return response.status(400).send('Bad Request')
+  }
+  
   try { 
     const savedBlog = await blog.save()
     response.json(savedBlog.toJSON())
@@ -27,6 +31,7 @@ blogsRouter.post('/', async (request, response, next) => {
     console.log(exception)
     next(exception)
   }
-  })
+})
+  
 
 module.exports = blogsRouter
