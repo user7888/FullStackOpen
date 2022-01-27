@@ -5,6 +5,7 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blogs')
 const { config } = require('dotenv')
+const blogs = require('../models/blogs')
 // npm test -- tests/blog_api.test.js
 
 beforeEach(async () => {
@@ -94,6 +95,22 @@ test('a note can be deleted', async () => {
   
   const blogsAtEnd = await helper.blogsInDb()
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+})
+
+test('likes field can be updated', async () => {
+  const testBlog = {
+    title: "Type wars",
+    author: "Robert C. Martin",
+    url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+    likes: 100
+  }
+
+  await api
+    .put('/api/blogs/5a422a851b54a676234d17f7')
+    .send(testBlog)
+  
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd[0].likes).toBe(testBlog.likes)
 })
 
 afterAll(() => {
