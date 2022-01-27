@@ -46,7 +46,6 @@ test('adding a new blog to database works correctly', async () => {
     likes: 2
   }
 
-// tsekkaa materiaali
   await api.post('/api/blogs')
     .send(testBlog)
     .expect(200)
@@ -78,9 +77,23 @@ test('if title and url properties are missing server responds with status code 4
     author: "Robert C. Martin",
     likes: 2
   }
-  await api.post('/api/blogs')
+  
+  await api
+    .post('/api/blogs')
     .send(testBlog)
     .expect(400)
+  
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+test('a note can be deleted', async () => {
+  await api
+    .delete('/api/blogs/5a422a851b54a676234d17f7')
+    .expect(204)
+  
+  const blogsAtEnd = await helper.blogsInDb()
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
 })
 
 afterAll(() => {
