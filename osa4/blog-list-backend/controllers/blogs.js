@@ -19,7 +19,7 @@ blogsRouter.post('/', async (request, response, next) => {
   if (body.likes === undefined) {
     blog.likes = 0
   }
-// send() vs. end() (json = send)
+  
   if (body.ttle === undefined && body.url === undefined) {
     return response.status(400).end()
   }
