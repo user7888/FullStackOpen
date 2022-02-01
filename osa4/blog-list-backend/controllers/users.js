@@ -1,11 +1,11 @@
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 const User = require('../models/users')
+const Blog = require('../models/users')
 
 usersRouter.post('/', async (request, response, next) => {
   const body = request.body
-// tähän jäätiin (tsekkaa vanhoista tehtävistä/materiaalista miten
-// luodaan erroreja oikein)
+
   if (body.password.length < 4 || body.password === undefined) {
     console.log('error: password missing or too short')
     return response.status(400).json({ error: 'password missing or too short' })
@@ -19,6 +19,7 @@ usersRouter.post('/', async (request, response, next) => {
       username: body.username,
       name: body.name,
       passwordHash,
+      blogs: []
     })
     const savedUser = await user.save()
     response.json(savedUser)
@@ -28,7 +29,7 @@ usersRouter.post('/', async (request, response, next) => {
 })
 
 usersRouter.get('/', async (request, response) => {
-  const users = await User.find({})
+  const users = await User.find({}).populate('blogs', {url: 1, title: 1, author: 1, id: 1})
   response.json(users.map(u => u.toJSON()))
 })
 

@@ -1,4 +1,5 @@
 // Helpfull functions for testing
+// 61f827d686842bc6a508ecda
 const Blog = require('../models/blogs')
 const User = require('../models/users')
 
@@ -8,6 +9,7 @@ const initialBlogs = [
     title: "React patterns",
     author: "Michael Chan",
     url: "https://reactpatterns.com/",
+    user: "61f822c8fed7b12aa92b5493",
     likes: 7,
     __v: 0
   },
@@ -16,6 +18,7 @@ const initialBlogs = [
     title: "Go To Statement Considered Harmful",
     author: "Edsger W. Dijkstra",
     url: "http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html",
+    user: "61f822c8fed7b12aa92b5493",
     likes: 5,
     __v: 0
   }

@@ -47,6 +47,7 @@ test('adding a new blog to database works correctly', async () => {
     title: "Type wars",
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+    user: "61f822c8fed7b12aa92b5493",
     likes: 2
   }
 
@@ -65,7 +66,8 @@ test('ensure that value of likes is 0 even if no value was given', async () => {
  const testBlog = {
   title: "Type warsz",
   author: "Robert C. Martin",
-  url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html"
+  url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+  user: "61f822c8fed7b12aa92b5493",
   }
 
   await api.post('/api/blogs')
@@ -79,6 +81,7 @@ test('ensure that value of likes is 0 even if no value was given', async () => {
 test('if title and url properties are missing server responds with status code 400', async () => {
   const testBlog = {
     author: "Robert C. Martin",
+    user: "61f822c8fed7b12aa92b5493",
     likes: 2
   }
   
@@ -105,6 +108,7 @@ test('likes field can be updated', async () => {
     title: "Type wars",
     author: "Robert C. Martin",
     url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+    user: "61f822c8fed7b12aa92b5493",
     likes: 100
   }
 
@@ -121,7 +125,16 @@ describe('when there is initially one user at db', () => {
     await User.deleteMany({})
 
     const passwordHash = await bcrypt.hash('sekret', 10)
-    const user = new User({ username: 'root', passwordHash })
+    const user = new User({ 
+      _id: "61f822c8fed7b12aa92b5493",
+      username: 'root',
+      name: "Matti Luukkainen",
+      passwordHash: passwordHash,
+      blogs: [
+        "5a422aa71b54a676234d17f8",
+        "5a422a851b54a676234d17f7"
+      ]
+    })
 
     await user.save()
   })
@@ -130,7 +143,7 @@ describe('when there is initially one user at db', () => {
     const usersAtStart = await helper.usersInDb()
 
     const newUser = {
-      username: 'mluukkai',
+      username: 'luukkai',
       name: 'Matti Luukkainen',
       password: 'salainen',
     }
