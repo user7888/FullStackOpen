@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blogs')
 const User = require('../models/users')
+const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response, next) => {
   const blogs = await Blog
@@ -8,9 +9,33 @@ blogsRouter.get('/', async (request, response, next) => {
   response.json(blogs.map(blog => blog.toJSON()))
 })
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
+  }
+  return null
+}
+
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
-  const user = await User.findById(body.user)
+  const token = getTokenFrom(request)
+
+  // catching errors without defining variables outside try/catch
+  let decodedToken = undefined
+  try {
+    decodedToken = jwt.verify(token, process.env.SECRET)
+  } catch(exception) {
+    console.log(exception)
+ // cleaner way?
+    next(exception)
+    return
+  }
+  if (!token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  const user = await User.findById(decodedToken.id)
 
   const blog = new Blog({
     title: body.title,

@@ -8,7 +8,7 @@ const { config } = require('dotenv')
 const blogs = require('../models/blogs')
 const bcrypt = require('bcrypt')
 const User = require('../models/users')
-// npm test -- tests/blog_api.test.js
+// run tests: npm test -- tests/blog_api.test.js
 
 
 beforeEach(async () => {
