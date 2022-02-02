@@ -9,16 +9,6 @@ blogsRouter.get('/', async (request, response, next) => {
   response.json(blogs.map(blog => blog.toJSON()))
 })
 
-/*
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    return authorization.substring(7)
-  }
-  return null
-}
-*/
-
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
 
@@ -66,11 +56,30 @@ blogsRouter.post('/', async (request, response, next) => {
 })
 
 blogsRouter.delete('/:id', async (request, response, next) => {
+  let decodedToken = undefined
   try {
-    await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).end()
-  } catch (exception) {
+    decodedToken = jwt.verify(request.token, process.env.SECRET)
+  } catch(exception) {
+    console.log(exception)
     next(exception)
+    return
+  }
+  if (!request.token || !decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  const blog = await Blog.findById(request.params.id)
+  if (blog.user.toString() === decodedToken.id.toString()) {
+    try {
+      console.log('Deleting blog..', blog)
+      console.log('User doing the deleting is..', decodedToken)
+      await Blog.findByIdAndRemove(request.params.id)
+      response.status(204).end()
+    } catch (exception) {
+      next(exception)
+    }
+  } else {
+    response.status(401).json({error: 'user has no authorization to delete this document'})
   }
 })
 

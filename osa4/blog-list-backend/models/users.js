@@ -5,7 +5,6 @@ const userSchema = mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
     minlength: 3
   },
   name: String,
@@ -27,7 +26,7 @@ userSchema.set('toJSON', {
   }
 })
 
-userSchema.plugin(uniqueValidator)
+//userSchema.plugin(uniqueValidator)
 
 const User = mongoose.model('User', userSchema)
 

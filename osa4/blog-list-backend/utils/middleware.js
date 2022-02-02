@@ -25,6 +25,9 @@ const errorHandler = (error, request, response, next) => {
     return response.status(401).json({
       error: 'invalid token'
     })
+  // mongoose-unique-validator PR #88 fix
+  } else if (error.name === 'MongoServerError' && error.code === 11000) {
+    return response.status(500).send({ success: false, message: 'Username already exists!'})
   }
   next(error)
 }
