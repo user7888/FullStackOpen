@@ -27,9 +27,9 @@ const errorHandler = (error, request, response, next) => {
     return response.status(401).json({
       error: 'invalid token'
     })
-  // mongoose-unique-validator PR #88 fix
+  // mongoose-unique-validator PR #88 workaround
   } else if (error.name === 'MongoServerError' && error.code === 11000) {
-    return response.status(500).send({ success: false, message: 'Username already exists!'})
+    return response.status(500).send({ error: 'Username already exists!'})
   }
   next(error)
 }
@@ -46,6 +46,9 @@ const tokenExtractor = (request, response, next) => {
 }
 
 const userExtractor = async (request, response, next) => {
+  if (!request.token) {
+    return response.status(401).json({ error: 'token missing or invalid'})
+  }
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!request.token || !decodedToken) {
     return response.status(401).json({ error: 'token missing or invalid'})
@@ -56,7 +59,6 @@ const userExtractor = async (request, response, next) => {
 
   next()
 }
-  
 
 module.exports = {
   requestLogger,

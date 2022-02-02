@@ -9,7 +9,7 @@ const blogs = require('../models/blogs')
 const bcrypt = require('bcrypt')
 const User = require('../models/users')
 // run tests: npm test -- tests/blog_api.test.js
-
+const token = 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjYxZjgyMmM4ZmVkN2IxMmFhOTJiNTQ5MyIsImlhdCI6MTY0MzgwMDQzM30.wEFtCx2e-0om9L89SD9zirKUv-oy1hLEEY6SUrf9zNA'
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -53,6 +53,7 @@ test('adding a new blog to database works correctly', async () => {
 
   await api.post('/api/blogs')
     .send(testBlog)
+    .set('Authorization', token)
     .expect(200)
 
   const blogsAtEnd = await helper.blogsInDb()
@@ -72,6 +73,7 @@ test('ensure that value of likes is 0 even if no value was given', async () => {
 
   await api.post('/api/blogs')
     .send(testBlog)
+    .set('Authorization', token)
     .expect(200)
 
   const blogsAtEnd = await helper.blogsInDb()
@@ -88,6 +90,7 @@ test('if title and url properties are missing server responds with status code 4
   await api
     .post('/api/blogs')
     .send(testBlog)
+    .set('Authorization', token)
     .expect(400)
   
   const blogsAtEnd = await helper.blogsInDb()
@@ -97,6 +100,7 @@ test('if title and url properties are missing server responds with status code 4
 test('a note can be deleted', async () => {
   await api
     .delete('/api/blogs/5a422a851b54a676234d17f7')
+    .set('Authorization', token)
     .expect(204)
   
   const blogsAtEnd = await helper.blogsInDb()
@@ -173,10 +177,10 @@ describe('when there is initially one user at db', () => {
     const result = await api
       .post('/api/users')
       .send(newUser)
-      .expect(400)
+      .expect(500)
       .expect('Content-Type', /application\/json/)
 
-    expect(result.body.error).toContain('`username` to be unique')
+    expect(result.body.error).toContain('Username already exists!')
     const usersAtEnd = await helper.usersInDb()
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
@@ -219,6 +223,22 @@ describe('when there is initially one user at db', () => {
     expect(usersAtEnd).toHaveLength(usersAtStart.length)
   })
 
+  test('adding a new blog fails if token is missing from the request', async () => {
+    const testBlog = {
+      title: "Type wars",
+      author: "Robert C. Martin",
+      url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
+      user: "61f822c8fed7b12aa92b5493",
+      likes: 2
+    }
+
+    await api.post('/api/blogs')
+      .send(testBlog)
+      .expect(401)
+
+    const blogsAtEnd = await helper.blogsInDb()
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  })
 })
 
 afterAll(() => {
