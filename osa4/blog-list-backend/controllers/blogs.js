@@ -40,8 +40,8 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response, next) 
   if (body.likes === undefined) {
     blog.likes = 0
   }
-// ttle
-  if (body.ttle === undefined && body.url === undefined) {
+
+  if (body.title === undefined && body.url === undefined) {
     return response.status(400).end()
   }
   
