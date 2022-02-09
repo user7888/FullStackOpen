@@ -13,7 +13,17 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
+  }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      // aiheuttaa uudelleen renderöinnin ja efektin suorituksen
+      setUser(user)
+      blogService.setToken(user.token)
+    }
   }, [])
 
   const handleLogin = async (event) => {
@@ -24,7 +34,12 @@ const App = () => {
       const user = await loginService.login({
         username, password,
       })
+
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
       setUser(user)
+      console.log('print in handle login:', user)
       setUsername('')
       setPassword('')
     } catch (exception) {
@@ -32,7 +47,15 @@ const App = () => {
     }
   }
 
+  const handleLogout = async (event) => {
+    event.preventDefault()
+    setUser(null)
+    window.localStorage.removeItem('loggedBlogappUser')
+  }
+
   const loginForm = () => (
+    <div>
+    <h2>login to application</h2>
     <form onSubmit={handleLogin}>
       <div>
         username
@@ -53,17 +76,19 @@ const App = () => {
         />
       </div>
       <button type="submit">login</button>
-    </form>      
+    </form>
+    </div>      
   )
-
 
   return (
     <div>
-      <h2>blogs</h2>
       {user === null ?
         loginForm() :
         <div>
-          <p>{user.name} logged in</p>
+          <h2>blogs</h2>
+          <div>
+            <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+          </div>
         </div>
       }
       {blogs.map(blog =>
