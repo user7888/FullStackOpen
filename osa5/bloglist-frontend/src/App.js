@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 //undefined is not iterable  [] => ()
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
@@ -11,7 +13,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
-
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -47,8 +49,10 @@ const App = () => {
       console.log('print in handleLogin:', user)
       setUsername('')
       setPassword('')
+      notifications(`User ${user.name} logged in`)
     } catch (exception) {
       console.log('error..', exception)
+      notifications(`wrong username or password`)
     }
   }
 
@@ -56,6 +60,7 @@ const App = () => {
     event.preventDefault()
     setUser(null)
     window.localStorage.removeItem('loggedBlogappUser')
+    notifications(`Logged out`)
   }
 
   const handleAddBlog = async (event) => {
@@ -68,6 +73,7 @@ const App = () => {
         url: url
       })
       setBlogs(blogs.concat(newBlog))
+      notifications(`a new blog ${newBlog.title} by ${newBlog.author} added`)
     } catch (exception) {
       console.log('error...', exception)
     }
@@ -76,6 +82,7 @@ const App = () => {
   const loginForm = () => (
     <div>
     <h2>login to application</h2>
+    <Notification message={notification}/>
     <form onSubmit={handleLogin}>
       <div>
         username
@@ -136,6 +143,13 @@ const App = () => {
     </div>
   )
 
+  const notifications = (notification) => {
+    setNotification(notification)
+    setTimeout(() => {
+      setNotification(null)
+    }, 2500)
+  }
+
   return (
     <div>
       {user === null ?
@@ -143,10 +157,11 @@ const App = () => {
         <div>
           <h2>blogs</h2>
           <div>
+            <Notification message={notification}/>
+          </div>
+          <div>
             <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-            <div>
-              {createBlogForm()}
-            </div>
+            {createBlogForm()}
           </div>
         </div>
       }
