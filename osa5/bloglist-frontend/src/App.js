@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import CreateBlogForm from './components/CreateBlogForm'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -14,6 +15,7 @@ const App = () => {
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
   const [notification, setNotification] = useState(null)
+  const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -106,7 +108,32 @@ const App = () => {
     </form>
     </div>      
   )
+  
+  const createBlogForm = () => {
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
 
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button onClick={() => setLoginVisible(true)}>create</button>
+        </div>
+        <div style={showWhenVisible}>
+          <CreateBlogForm
+            handleAddBlog={handleAddBlog}
+            handleTitleChange={({ target }) => setTitle(target.value)}
+            handleAuthorChange={({ target }) => setAuthor(target.value)}
+            handleUrlChange={({ target }) => setUrl(target.value)}
+            title={title}
+            author={author}
+            url={url}
+          />
+          <button onClick={() => setLoginVisible(false)}>cancel</button>
+        </div>
+      </div>
+    )
+  }
+  /*
   const createBlogForm = () => (
     <div>
       <h2>create new</h2>
@@ -143,6 +170,7 @@ const App = () => {
     </div>
   )
 
+  */
   const notifications = (notification) => {
     setNotification(notification)
     setTimeout(() => {
