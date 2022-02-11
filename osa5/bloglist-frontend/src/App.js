@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
-import CreateBlogForm from './components/CreateBlogForm'
+import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Toggleable from './components/Toggleable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 //undefined is not iterable  [] => ()
@@ -11,11 +12,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [notification, setNotification] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(false)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -65,15 +62,11 @@ const App = () => {
     notifications(`Logged out`)
   }
 
-  const handleAddBlog = async (event) => {
+  const handleAddBlog = async (event, blogObject) => {
     event.preventDefault()
 
     try {
-      const newBlog = await blogService.create({
-        title: title,
-        author: author,
-        url: url
-      })
+      const newBlog = await blogService.create({ blogObject })
       setBlogs(blogs.concat(newBlog))
       notifications(`a new blog ${newBlog.title} by ${newBlog.author} added`)
     } catch (exception) {
@@ -108,69 +101,14 @@ const App = () => {
     </form>
     </div>      
   )
-  
-  const createBlogForm = () => {
-    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-    const showWhenVisible = { display: loginVisible ? '' : 'none' }
 
-    return (
-      <div>
-        <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>create</button>
-        </div>
-        <div style={showWhenVisible}>
-          <CreateBlogForm
-            handleAddBlog={handleAddBlog}
-            handleTitleChange={({ target }) => setTitle(target.value)}
-            handleAuthorChange={({ target }) => setAuthor(target.value)}
-            handleUrlChange={({ target }) => setUrl(target.value)}
-            title={title}
-            author={author}
-            url={url}
-          />
-          <button onClick={() => setLoginVisible(false)}>cancel</button>
-        </div>
-      </div>
-    )
-  }
-  /*
+  // vaihto {} => ()
   const createBlogForm = () => (
-    <div>
-      <h2>create new</h2>
-      <form onSubmit={handleAddBlog} noValidate={true}>
-        <div>
-          title:
-          <input
-          type="title"
-          value={title}
-          name="Title"
-          onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author:
-          <input
-          type="author"
-          value={author}
-          name="Author"
-          onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url:
-          <input
-          type="url"
-          value={url}
-          name="Url"
-          onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </div>
+    <Toggleable buttonLabel='create'>
+      <BlogForm handleAddBlog={handleAddBlog}/>
+    </Toggleable>
   )
 
-  */
   const notifications = (notification) => {
     setNotification(notification)
     setTimeout(() => {
