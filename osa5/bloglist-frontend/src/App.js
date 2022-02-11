@@ -62,11 +62,9 @@ const App = () => {
     notifications(`Logged out`)
   }
 
-  const handleAddBlog = async (event, blogObject) => {
-    event.preventDefault()
-
+  const handleAddBlog = async ( blogObject ) => {
     try {
-      const newBlog = await blogService.create({ blogObject })
+      const newBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(newBlog))
       notifications(`a new blog ${newBlog.title} by ${newBlog.author} added`)
     } catch (exception) {
@@ -75,9 +73,9 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <div>
-    <h2>login to application</h2>
+    <div className="loginformstyle">
     <Notification message={notification}/>
+    <h2>login to application</h2>
     <form onSubmit={handleLogin}>
       <div>
         username
@@ -120,11 +118,9 @@ const App = () => {
     <div>
       {user === null ?
         loginForm() :
-        <div>
+        <div className="loginformstyle">
+          <Notification message={notification}/>
           <h2>blogs</h2>
-          <div>
-            <Notification message={notification}/>
-          </div>
           <div>
             <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
             {createBlogForm()}
