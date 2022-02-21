@@ -15,9 +15,10 @@ const App = () => {
   const [notification, setNotification] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
+    blogService.getAll().then(blogs => {
+      const blogsSorted = blogs.sort( compareFunction ).reverse()
+      setBlogs( blogsSorted )
+    })
   }, [])
 
   useEffect(() => {
@@ -82,6 +83,16 @@ const App = () => {
     } catch (exception) {
       console.log('error...', exception)
     }
+  }
+
+  const compareFunction = (a, b) => {
+    if (a.likes < b.likes) {
+      return -1
+    }
+    if (a.likes > b.likes) {
+      return 1
+    }
+    return 0
   }
 
   const loginForm = () => (
