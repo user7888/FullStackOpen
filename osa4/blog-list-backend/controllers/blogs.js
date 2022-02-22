@@ -70,6 +70,7 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response, n
   }
 
   const blog = await Blog.findById(request.params.id)
+
   if (blog.user.toString() === decodedToken.id.toString()) {
     try {
       console.log('Deleting blog..', blog)

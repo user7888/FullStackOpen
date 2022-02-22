@@ -85,6 +85,18 @@ const App = () => {
     }
   }
 
+  // tarkista
+  const handleRemoveButton = async ( blogObject ) => {
+    const deletedBlog = blogObject
+    try {
+      await blogService.remove(blogObject)
+      setBlogs(blogs.filter(blog => blog.id !== deletedBlog.id))
+      notifications(`deleted a blog named ${deletedBlog.title} by ${deletedBlog.author}`)
+    } catch (exception) {
+      console.log('error...', exception)
+    }
+  }
+
   const compareFunction = (a, b) => {
     if (a.likes < b.likes) {
       return -1
@@ -151,7 +163,7 @@ const App = () => {
         </div>
       }
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handleLikeButton={handleLikeButton}/>
+        <Blog key={blog.id} blog={blog} handleLikeButton={handleLikeButton} handleRemoveButton={handleRemoveButton}/>
       )}
     </div>
   )
