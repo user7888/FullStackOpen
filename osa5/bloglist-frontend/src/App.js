@@ -23,6 +23,7 @@ const App = () => {
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    console.log(`did something: ${loggedUserJSON}`)
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       // aiheuttaa uudelleen renderöinnin ja efektin suorituksen
@@ -59,7 +60,9 @@ const App = () => {
   const handleLogout = async (event) => {
     event.preventDefault()
     setUser(null)
+    blogService.setToken('none')
     window.localStorage.removeItem('loggedBlogappUser')
+    console.log(`token on: ${user.token}`)
     notifications(`Logged out`)
   }
 
@@ -163,7 +166,7 @@ const App = () => {
         </div>
       }
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handleLikeButton={handleLikeButton} handleRemoveButton={handleRemoveButton}/>
+        <Blog key={blog.id} blog={blog} user={user} handleLikeButton={handleLikeButton} handleRemoveButton={handleRemoveButton}/>
       )}
     </div>
   )
