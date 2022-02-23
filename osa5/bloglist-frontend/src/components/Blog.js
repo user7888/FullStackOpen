@@ -15,7 +15,12 @@ const Blog = ({blog, user, handleLikeButton, handleRemoveButton}) => {
   }
 
   const removeBlog = () => {
-    handleRemoveButton(blog)
+    const answer = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+    if (answer) {
+      handleRemoveButton(blog)
+    } else {
+      return
+    }
   }
 
   const removeButton = () => {
