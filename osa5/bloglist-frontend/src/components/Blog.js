@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({ blog, user, handleLikeButton, handleRemoveButton }) => {
+const Blog = ({ blog, user, button, handleLikeButton, handleRemoveButton }) => {
   const [showContent, setShowContent] = useState(false)
   const [buttonLabel, setButtonLabel] = useState('view')
 
