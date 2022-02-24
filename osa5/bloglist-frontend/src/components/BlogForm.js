@@ -1,3 +1,4 @@
+import propTypes from 'prop-types'
 import React, { useState } from 'react'
 
 const BlogForm = ({ handleAddBlog }) => {
@@ -7,7 +8,7 @@ const BlogForm = ({ handleAddBlog }) => {
 
   const addBlog = (event) => {
     event.preventDefault()
-    
+
     handleAddBlog({
       title: title,
       author: author,
@@ -26,31 +27,35 @@ const BlogForm = ({ handleAddBlog }) => {
         <div>
           title:
           <input
-          type="title"
-          value={title}
-          name="Title"
-          onChange={({ target }) => setTitle(target.value)}/>
+            type="title"
+            value={title}
+            name="Title"
+            onChange={({ target }) => setTitle(target.value)}/>
         </div>
         <div>
           author:
           <input
-          type="author"
-          value={author}
-          name="Author"
-          onChange={({ target }) => setAuthor(target.value)}/>
+            type="author"
+            value={author}
+            name="Author"
+            onChange={({ target }) => setAuthor(target.value)}/>
         </div>
         <div>
           url:
           <input
-          type="url"
-          value={url}
-          name="Url"
-          onChange={({ target }) => setUrl(target.value)}/>
+            type="url"
+            value={url}
+            name="Url"
+            onChange={({ target }) => setUrl(target.value)}/>
         </div>
         <button type="submit">create</button>
       </form>
     </div>
   )
+}
+
+BlogForm.propTypes = {
+  handleAddBlog: propTypes.func.isRequired
 }
 
 export default BlogForm

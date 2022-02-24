@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const Blog = ({blog, user, handleLikeButton, handleRemoveButton}) => {
+const Blog = ({ blog, user, handleLikeButton, handleRemoveButton }) => {
   const [showContent, setShowContent] = useState(false)
   const [buttonLabel, setButtonLabel] = useState('view')
 
@@ -76,9 +76,9 @@ const Blog = ({blog, user, handleLikeButton, handleRemoveButton}) => {
       {showContent === false ?
         showSimple() :
         showDetailed()
-      } 
+      }
     </div>
-  )  
+  )
 }
 
 export default Blog

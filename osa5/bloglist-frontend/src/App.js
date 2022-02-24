@@ -53,7 +53,7 @@ const App = () => {
       notifications(`User ${user.name} logged in`)
     } catch (exception) {
       console.log('error..', exception)
-      notifications(`wrong username or password`)
+      notifications('wrong username or password')
     }
   }
 
@@ -63,7 +63,7 @@ const App = () => {
     blogService.setToken('none')
     window.localStorage.removeItem('loggedBlogappUser')
     console.log(`token on: ${user.token}`)
-    notifications(`Logged out`)
+    notifications('Logged out')
   }
 
   const handleAddBlog = async ( blogObject ) => {
@@ -112,30 +112,30 @@ const App = () => {
 
   const loginForm = () => (
     <div className="loginformstyle">
-    <Notification message={notification}/>
-    <h2>login to application</h2>
-    <form onSubmit={handleLogin}>
-      <div>
+      <Notification message={notification}/>
+      <h2>login to application</h2>
+      <form onSubmit={handleLogin}>
+        <div>
         username
           <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
+            type="text"
+            value={username}
+            name="Username"
+            onChange={({ target }) => setUsername(target.value)}
+          />
+        </div>
+        <div>
         password
           <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
-    </div>      
+            type="password"
+            value={password}
+            name="Password"
+            onChange={({ target }) => setPassword(target.value)}
+          />
+        </div>
+        <button type="submit">login</button>
+      </form>
+    </div>
   )
 
   // vaihto {} => ()
