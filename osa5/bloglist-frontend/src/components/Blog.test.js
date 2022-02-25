@@ -39,9 +39,7 @@ test('url & likes are displayed after view-button is pressed', async () => {
   }
 
   render(
-    <div>
-      <Blog blog={blog}/>
-    </div>
+    <Blog blog={blog}/>
   )
 
   // getByRole can be used to query a specific element
@@ -56,5 +54,34 @@ test('url & likes are displayed after view-button is pressed', async () => {
   const likesElement = screen.queryByText('5', { exact: false })
 
   expect(urlElement).toBeDefined()
+  expect(likesElement).toBeDefined()
+})
+
+test('amount of likes increases when like button is pressed', async () => {
+  const blog  = {
+    title: 'Title of blog',
+    author: 'Author',
+    url: 'www.pagename.com',
+    likes: 5
+  }
+
+  const mockHandler = jest.fn()
+
+  render(
+    <Blog blog={blog} handleLikeButton={mockHandler}/>
+  )
+
+  const viewButton = screen.getByRole('button', {
+    name: /view/i
+  })
+  userEvent.click(viewButton)
+
+  const likeButton = screen.getByRole('button', {
+    name: /like/i
+  })
+  userEvent.click(likeButton)
+  userEvent.click(likeButton)
+
+  const likesElement = screen.queryByText('Likes 2', { exact: false })
   expect(likesElement).toBeDefined()
 })
